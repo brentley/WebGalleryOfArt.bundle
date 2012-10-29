@@ -10,6 +10,7 @@ LOOKUP = {
   'LOCATION': 5, 'URL': 6, 'FORM': 7, 'TYPE': 8, 'SCHOOL': 9, 'TIMELINE': 10
 }
 
+####################################################################################################
 def Start():
   Plugin.AddViewGroup('InfoList', viewMode='InfoList', mediaType='items')
   ObjectContainer.title1 = PLUGIN_NAME
@@ -18,7 +19,8 @@ def Start():
   DirectoryObject.art = R(ART)
   DirectoryObject.thumb = R(ICON)
 
-@handler(PLUGIN_PREFIX, PLUGIN_NAME)
+####################################################################################################
+@handler(PLUGIN_PREFIX, PLUGIN_NAME, thumb=ICON, art=ART)
 def TopMenu():
   oc = ObjectContainer(view_group='InfoList')
   oc.add(DirectoryObject(key=Callback(AlphaMenu), title=Locale.LocalString('AUTHOR')))
@@ -29,22 +31,26 @@ def TopMenu():
   oc.add(InputDirectoryObject(key=Callback(SearchMenu), title=Locale.LocalString('search'), prompt=Locale.LocalString('search_desc'), thumb=R(ICON)))
   return oc
 
+####################################################################################################
 def AlphaMenu():
   oc = ObjectContainer(view_group='InfoList', title2=Locale.LocalString('first_letter'))
   for letter in list(string.ascii_uppercase):
     oc.add(DirectoryObject(key=Callback(SectionMenu, choice=letter), title=letter))
   return oc
 
+####################################################################################################
 def SectionMenu(choice):
   if len(choice) > 1:
     title = Locale.LocalString(choice)
   else:
     title = Locale.LocalString('first_letter')+' '+choice
+
   oc = ObjectContainer(view_group='InfoList', title2=title)
   handle = StringIO.StringIO(Resource.Load(PLUGIN_DATA, binary=False))
   data = csv.reader(handle)
   data.next()
   res = []
+
   if len(choice) > 1:
     for row in data:
       if row[LOOKUP[choice]] not in res: res.append(row[LOOKUP[choice]])
@@ -52,11 +58,15 @@ def SectionMenu(choice):
     for row in data:
       if row[LOOKUP['AUTHOR']][0] == choice and row[LOOKUP['AUTHOR']] not in res: res.append(row[LOOKUP['AUTHOR']])
     choice = 'AUTHOR'
+
   res.sort()
+
   for value in res:
     oc.add(DirectoryObject(key=Callback(GetImages, key=choice, choice=value), title=string.capwords(value).decode('latin-1')))
+
   return oc
 
+####################################################################################################
 def SearchMenu(query):
   oc = ObjectContainer(view_group='InfoList', title2=query)
   handle = StringIO.StringIO(Resource.Load(PLUGIN_DATA, binary=False))
@@ -71,6 +81,7 @@ def SearchMenu(query):
     oc.add(DirectoryObject(key=Callback(GetImages, key='AUTHOR', choice=value), title=string.capwords(value).decode('latin-1')))
   return oc
 
+####################################################################################################
 def GetImages(key, choice):
   oc = ObjectContainer(view_group='InfoList')
   handle = StringIO.StringIO(Resource.Load(PLUGIN_DATA, binary=False))
