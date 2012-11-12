@@ -28,7 +28,7 @@ def TopMenu():
   oc.add(DirectoryObject(key=Callback(SectionMenu, choice='TYPE'), title=Locale.LocalString('TYPE')))
   oc.add(DirectoryObject(key=Callback(SectionMenu, choice='SCHOOL'), title=Locale.LocalString('SCHOOL')))
   oc.add(DirectoryObject(key=Callback(SectionMenu, choice='TIMELINE'), title=Locale.LocalString('TIMELINE')))
-  oc.add(InputDirectoryObject(key=Callback(SearchMenu), title=Locale.LocalString('search'), prompt=Locale.LocalString('search_desc'), thumb=R(ICON)))
+  oc.add(InputDirectoryObject(key=Callback(SearchMenu, query=''), title=Locale.LocalString('search'), prompt=Locale.LocalString('search_desc'), thumb=R(ICON)))
   return oc
 
 ####################################################################################################
