@@ -1,6 +1,5 @@
 import csv, string, StringIO
 
-PLUGIN_PREFIX = '/photos/wga'
 PLUGIN_DATA = 'catalog.csv'
 PLUGIN_NAME = 'Web Gallery Of Art'
 ART = 'art-default.jpg'
@@ -20,7 +19,7 @@ def Start():
   DirectoryObject.thumb = R(ICON)
 
 ####################################################################################################
-@handler(PLUGIN_PREFIX, PLUGIN_NAME, thumb=ICON, art=ART)
+@handler('/photos/wga', PLUGIN_NAME, thumb=ICON, art=ART)
 def TopMenu():
   oc = ObjectContainer(view_group='InfoList')
   oc.add(DirectoryObject(key=Callback(AlphaMenu), title=Locale.LocalString('AUTHOR')))
@@ -28,10 +27,11 @@ def TopMenu():
   oc.add(DirectoryObject(key=Callback(SectionMenu, choice='TYPE'), title=Locale.LocalString('TYPE')))
   oc.add(DirectoryObject(key=Callback(SectionMenu, choice='SCHOOL'), title=Locale.LocalString('SCHOOL')))
   oc.add(DirectoryObject(key=Callback(SectionMenu, choice='TIMELINE'), title=Locale.LocalString('TIMELINE')))
-  oc.add(InputDirectoryObject(key=Callback(SearchMenu, query=''), title=Locale.LocalString('search'), prompt=Locale.LocalString('search_desc'), thumb=R(ICON)))
+  oc.add(InputDirectoryObject(key=Callback(SearchMenu), title=Locale.LocalString('search'), prompt=Locale.LocalString('search_desc'), thumb=R(ICON)))
   return oc
 
 ####################################################################################################
+@route('/photos/wga/alpha')
 def AlphaMenu():
   oc = ObjectContainer(view_group='InfoList', title2=Locale.LocalString('first_letter'))
   for letter in list(string.ascii_uppercase):
@@ -39,6 +39,7 @@ def AlphaMenu():
   return oc
 
 ####################################################################################################
+@route('/photos/wga/section')
 def SectionMenu(choice):
   if len(choice) > 1:
     title = Locale.LocalString(choice)
@@ -68,7 +69,8 @@ def SectionMenu(choice):
   return oc
 
 ####################################################################################################
-def SearchMenu(query):
+@route('/photos/wga/search')
+def SearchMenu(query=''):
   oc = ObjectContainer(view_group='InfoList', title2=query)
   handle = StringIO.StringIO(Resource.Load(PLUGIN_DATA, binary=True))
   data = csv.reader(handle)
@@ -84,6 +86,7 @@ def SearchMenu(query):
   return oc
 
 ####################################################################################################
+@route('/photos/wga/images')
 def GetImages(key, choice):
   oc = ObjectContainer(view_group='InfoList', title2=choice.decode('latin-1'))
   handle = StringIO.StringIO(Resource.Load(PLUGIN_DATA, binary=True))
