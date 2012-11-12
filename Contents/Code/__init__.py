@@ -1,7 +1,7 @@
 import csv, string, StringIO
 
 PLUGIN_DATA = 'catalog.csv'
-PLUGIN_NAME = 'Web Gallery Of Art'
+PLUGIN_NAME = 'Web Gallery of Art'
 ART = 'art-default.jpg'
 ICON = 'icon-default.png'
 LOOKUP = {
